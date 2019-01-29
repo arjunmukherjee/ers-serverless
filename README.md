@@ -99,8 +99,7 @@ All errors will be printed to the logs/console and the corresponding event will 
 - `keyword` = Url encoded string representation of the entity you wish to attempt to resolve e.g. `keyword = urllib.parse.quote(keyword_arg, safe='')`
 
 ___
-
-<a name="resolve"/>
+<a name="resolve"></a>
 ### Lookup or Resolve
 - **REQUEST**: `curl -XPOST https://entityresolution-<ENV>.<domain>.com/api/v1/resolve/keyword/somebadcompany`
 - **RESPONSE**: 
@@ -109,7 +108,7 @@ ___
 
 ___
 
-<a name="smartresolve"/>
+<a name="smartresolve"></a>
 ### Smart Lookup or Resolve
 - **REQUEST**: `curl -XPOST https://entityresolution-<ENV>.<domain>.com/api/v1/smartresolve/keyword/somebadcompany/0.8`
 - **RESPONSE**: 
@@ -127,7 +126,7 @@ ___
 
 ___
 
-<a name="force"/>
+<a name="force"></a>
 ### Force Resolution
 - **REQUEST**: `curl -XPOST https://entityresolution-<ENV>.<domain>.com/api/v1/resolve/force/keyword/linkedin`
 - **RESPONSE**:
@@ -155,7 +154,7 @@ ___
         
 ___
 
-<a name="lookup"/> 
+<a name="lookup"></a> 
 ### Lookup
 - **REQUEST**: `curl -XGET https://entityresolution-<ENV>.<domain>.com/api/v1/lookup/keyword/linkedin`
 - **RESPONSE**: 
@@ -164,7 +163,7 @@ ___
 
 ___
 
-<a name="smartlookup"/>
+<a name="smartlookup"></a>
 ### Smart Lookup
 - **REQUEST**: `curl -XGET https://entityresolution-<ENV>.<domain>.com/api/v1/smartlookup/keyword/linkedin/0.8`
 - **RESPONSE**: 
@@ -182,7 +181,7 @@ ___
 
 ___
 
-<a name="override"/>
+<a name="override"></a>
 ### Manual override
 #### To add data to resolve to 
 - **REQUEST**: `curl -XPOST https://entityresolution-<ENV>.<domain>.com/api/v1/override --data @manual_override.template`
