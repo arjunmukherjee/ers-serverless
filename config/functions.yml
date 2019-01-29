@@ -1,0 +1,74 @@
+resolveEntity:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.entity_handler.entity_resolution
+  events:
+    - http:
+        path: api/v1/resolve/keyword/{keyword}
+        method: post
+        private: false
+        request:
+          parameters:
+            paths:
+              keyword: true
+resolveEntitySmart:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.smart_entity_handler.entity_resolution_smart
+  events:
+    - http:
+        path: api/v1/smartresolve/keyword/{keyword}/{minconfidence}
+        method: post
+        private: false
+        request:
+          parameters:
+            paths:
+              keyword: true
+              minconfidence: false
+resolveEntityForce:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.entity_handler.entity_resolution_force
+  events:
+    - http:
+        path: api/v1/resolve/force/keyword/{keyword}
+        method: post
+        private: false
+        request:
+          parameters:
+            paths:
+              keyword: true
+lookupEntity:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.entity_handler.entity_lookup
+  events:
+    - http:
+        path: api/v1/lookup/keyword/{keyword}
+        method: get
+        private: false
+        request:
+          parameters:
+            paths:
+              keyword: true
+lookupEntitySmart:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.smart_entity_handler.entity_lookup_smart
+  events:
+    - http:
+        path: api/v1/smartlookup/keyword/{keyword}/{minconfidence}
+        method: get
+        private: false
+        request:
+          parameters:
+            paths:
+              keyword: true
+              minconfidence: false
+addManualOverride:
+  onError: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+  handler: src.resolution.manual_override.add_override
+  events:
+    - http:
+        path: api/v1/override
+        method: post
+        private: false
+snsErrorHandler:
+  handler: src.sns.sns_handler.error_handler
+  events:
+    - sns: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}

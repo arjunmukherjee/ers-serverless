@@ -1,0 +1,6 @@
+{
+            "keyword": "<ADD KEYWORD>",
+            "manual_override": {
+                "prevent_resolution": true/false
+            }
+}

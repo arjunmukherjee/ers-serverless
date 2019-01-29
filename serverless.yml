@@ -1,0 +1,36 @@
+service: entity-resolution
+
+provider:
+  name: aws
+  runtime: python3.6
+  timeout: 20
+  cfLogs: true
+  role: entityResolutionRole
+  region: ${opt:region, 'us-west-2'}
+  account: ${opt:account, 'AWS_ACCOUNT_ID'}
+  env: ${opt:env}
+  stage: ${opt:stage, 'pri'}
+  versionFunctions: false # optional, default is true
+  memorySize: 1024 # optional, in MB, default is 1024
+  environment:
+    ERS_ENVIRONMENT_NAME: ${self:provider.env}
+    TR_API_KEY: ${opt:tr-api-key, "'TR_API_KEY1', 'TR_API_KEY2'"}
+    TR_URL: ${opt:tr-url, 'https://api.thomsonreuters.com/permid'}
+    AWS_SNS_ARN: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}
+    ERS_AWS_REGION: ${self:provider.region}
+    RESOLVED_TABLE_NAME: ${self:custom.resolved_entities_table_name}
+    UNRESOLVED_TABLE_NAME: ${self:custom.unresolved_entities_table_name}
+  tags:
+    ENVIRONMENT: ${self:provider.env}-${self:provider.stage}
+
+plugins:
+  - serverless-python-requirements
+  - serverless-domain-manager
+
+custom: ${file(config/variables.yml)}
+
+functions: ${file(config/functions.yml)}
+
+resources: ${file(config/resources.yml)}
+
+

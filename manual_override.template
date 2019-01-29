@@ -1,0 +1,10 @@
+{
+            "keyword": "<ADD KEYWORD>",
+            "manual_override": {
+                "keyword": "<ADD KEYWORD>",
+                "perm_id": <ADD PERM ID>,
+                "org_name": "<ADD ORG NAME>",
+                "confidence": "<ADD decimal SCORE between 0-1>",
+                "is_company_score": "<ADD decimal SCORE between 0-1>"
+            }
+}

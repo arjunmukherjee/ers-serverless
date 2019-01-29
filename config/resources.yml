@@ -1,0 +1,103 @@
+Resources:
+  SNSErrorQueue:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: ${self:custom.error_topic_sns_name}
+      TopicName: ${self:custom.error_topic_sns_name}
+  ResolvedEntityDynamoDbTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: ${self:custom.resolved_entities_table_name}
+          AttributeDefinitions:
+            - AttributeName: keyword
+              AttributeType: S
+          KeySchema:
+            - AttributeName: keyword
+              KeyType: HASH
+          ProvisionedThroughput:
+              ReadCapacityUnits: ${file(config/capacity.yml):dynamodb-read-capacity-${self:provider.env}}
+              WriteCapacityUnits: ${file(config/capacity.yml):dynamodb-write-capacity-${self:provider.env}}
+  UnresolvedDynamoDbTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: ${self:custom.unresolved_entities_table_name}
+          AttributeDefinitions:
+            - AttributeName: keyword
+              AttributeType: S
+          KeySchema:
+            - AttributeName: keyword
+              KeyType: HASH
+          ProvisionedThroughput:
+              ReadCapacityUnits: ${file(config/capacity.yml):dynamodb-read-capacity-${self:provider.env}}
+              WriteCapacityUnits: ${file(config/capacity.yml):dynamodb-write-capacity-${self:provider.env}}
+  ResolvedEntityDynamoDBIamPolicy:
+        Type: AWS::IAM::Policy
+        DependsOn: ResolvedEntityDynamoDbTable
+        Properties:
+          PolicyName: lambda_dynamodb
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                Resource: arn:aws:dynamodb:${self:provider.region}:${self:provider.account}:table/${self:custom.resolved_entities_table_name}
+          Roles:
+            - Ref: ${self:provider.role}
+  UnResolvedDynamoDBIamPolicy:
+        Type: AWS::IAM::Policy
+        DependsOn: UnresolvedDynamoDbTable
+        Properties:
+          PolicyName: lambda_dynamodb_unresolved
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                Resource: arn:aws:dynamodb:${self:provider.region}:${self:provider.account}:table/${self:custom.unresolved_entities_table_name}
+          Roles:
+            - Ref: ${self:provider.role}
+  researchEntityResolutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:custom.iam_role_name}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: logging_policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+        - PolicyName: lambda_invoke_policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: arn:aws:lambda:*:*:*
+        - PolicyName: sns_policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:${self:provider.region}:${self:provider.account}:${self:custom.error_topic_sns_name}

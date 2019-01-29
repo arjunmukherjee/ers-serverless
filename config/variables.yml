@@ -1,0 +1,12 @@
+pythonRequirements:
+    dockerizePip: non-linux
+customDomain:
+    domainName: entityresolution-${self:provider.env}.${self:custom.domain_name}
+    certificateName: '*.${self:custom.domain_name}'
+    createRoute53Record: true
+domain_name: ${opt:domain, 'defaulttest.com'}
+
+resolved_entities_table_name: resolved-entities-${self:provider.env}
+unresolved_entities_table_name: unresolved-entities-${self:provider.env}
+error_topic_sns_name: error_topic-${self:provider.env}
+iam_role_name: research-resolved-entities-role-${self:provider.env}
