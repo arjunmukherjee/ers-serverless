@@ -24,6 +24,3 @@ def get_tr_api_key():
 def get_tr_url():
     return os.environ['TR_URL']
 
-
-def get_mds_url():
-    return os.environ['MARKET_DATA_SERVICE_URL']
